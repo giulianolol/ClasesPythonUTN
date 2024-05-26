@@ -54,8 +54,7 @@ def obtener_nombre(diccionario:dict, clave:str):
     else: retorno = False
     
     return retorno
-    
-    
+        
 def obtener_nombre_y_dato(diccionario:dict, clave:str):
     
     prueba = obtener_nombre(diccionario, clave)
@@ -153,7 +152,6 @@ def obtener_dato_cantidad(lista:list, num:int, clave:str):
     
     return lista_heroes
 
-
 def stark_imprimir_heroes(lista:list):
     
     if not lista:
@@ -221,7 +219,6 @@ def imprimir_menu():
 
     return valor_ingresado, valor_validado
 
-
 def validar_entero(cadena:str):
     
     bandera_letra = False
@@ -253,62 +250,51 @@ def stark_menu_principal():
 
 def stark_marvel_app(lista):
 
+    bandera_datos_corregidos = False
+
     valor_ingresado = stark_menu_principal()
 
-    while valor_ingresado != 1:
+    if valor_ingresado == 1:
 
-        valor_ingresado_aux = input("Es necesario corregir los datos primero.\nIngrese un el numero 1: ")
-        
-        while valor_ingresado_aux != "1":
-            
-            valor_ingresado_aux = input("Es necesario corregir los datos primero.\nIngrese un el numero 1: ")
+        print("Datos corregidos satisfactoriamente.")
+        bandera_datos_corregidos = True
+    
+    elif valor_ingresado == 2 and bandera_datos_corregidos == True:
 
-        stark_normalizar_datos(lista)
+        pass
 
-        valor_ingresado = input("Ingrese la funcion que desea utilizar. ")
+    elif valor_ingresado == 3 and bandera_datos_corregidos == True:
 
-        if valor_ingresado == 2 :
+        pass
 
-            for i in range(len(lista)):
+    elif valor_ingresado == 4 and bandera_datos_corregidos == True:
 
-                print(obtener_nombre_y_dato(lista[i],"genero"))
+        pass
 
-        elif valor_ingresado == 3 :
+    elif valor_ingresado == 5 and bandera_datos_corregidos == True:
 
-            print("Está acá 3")
+        pass
 
-        elif valor_ingresado == 4 :
+    elif valor_ingresado == 6 and bandera_datos_corregidos == True:
 
-            print("Está acá 4")
+        pass
 
-        elif valor_ingresado == 5 :
+    elif valor_ingresado == 7 and bandera_datos_corregidos == True:
 
-            pass
+        pass
 
-        elif valor_ingresado == 6 :
+    elif valor_ingresado == 8 and bandera_datos_corregidos == True:
 
-            pass
+        pass
 
-        elif valor_ingresado == 7 :
+    elif valor_ingresado == 9 and bandera_datos_corregidos == True:
 
-            pass
+        pass
 
-        elif valor_ingresado == 8 :
+    elif valor_ingresado == 10 and bandera_datos_corregidos == True:
 
-            pass
+        pass
 
-        elif valor_ingresado == 9 :
+    elif valor_ingresado == 11 and bandera_datos_corregidos == True:
 
-            pass
-
-        elif valor_ingresado == 10 :
-
-            pass
-
-        elif valor_ingresado == 11 :
-
-            pass
-
-        else: 
-            print("Está acá.")
-            print(type(valor_ingresado))
+        pass

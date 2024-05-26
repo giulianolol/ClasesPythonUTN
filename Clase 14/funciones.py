@@ -60,6 +60,14 @@ def pedir_id_para_modificar_clase(lista):
 
 def mostrar_info_profesor(lista):
     
-    for diccicionario in lista:
+    asdas = {"id":1, "nombre":"a"}
+
+    for i in asdas:
+
+        print(asdas[i].value())
+
+    
+
+    # for diccicionario in lista:
         
-        
+    #     diccicionario

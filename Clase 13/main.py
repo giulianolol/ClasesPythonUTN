@@ -1,7 +1,6 @@
 from heroes import lista_personajes as lista
 from funciones import *
- 
-stark_normalizar_datos(lista)
+
 
 # for i in range(len(lista)):
     
@@ -45,6 +44,4 @@ stark_normalizar_datos(lista)
 # print(validar_entero("4654"))
 # print(validar_entero("asdad54456"))
 
-valor = imprimir_menu()
-
-print(valor)
+stark_marvel_app(lista)

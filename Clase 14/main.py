@@ -25,12 +25,12 @@ conteo_materias = {}
 #     print(lista_profesores_activos[i])
 
 
-mostrar_profesores_y_materias(lista, conteo_materias)
+# mostrar_profesores_y_materias(lista, conteo_materias)
 
-profesor_modificado = {}
+# profesor_modificado = {}
 
+mostrar_info_profesor(lista)
 
+# resultado = pedir_id_para_modificar_clase(lista)
 
-resultado = pedir_id_para_modificar_clase(lista)
-
-print(resultado["clases"])
+# print(resultado["clases"])
