@@ -213,7 +213,7 @@ def mostrar_promedio_dato(lista:list, clave:str):
     return retorno
 
 def imprimir_menu():
-    valor_ingrsado = input("A. Normalizar datos.\nB. Recorrer la lista imprimiendo por consola el nombre de cada superhéroe de género NB\nC. Recorrer la lista y determinar cuál es el superhéroe más alto de género F\nD. Recorrer la lista y determinar cuál es el superhéroe más alto de género M\nE. Recorrer la lista y determinar cuál es el superhéroe más débil de género M\nF. Recorrer la lista y determinar cuál es el superhéroe más débil de género NB\nG. Recorrer la lista y determinar la fuerza promedio de los superhéroes de género NB\nH. Determinar cuántos superhéroes tienen cada tipo de color de ojos.\nI. Determinar cuántos superhéroes tienen cada tipo de color de pelo.\nJ. Listar todos los superhéroes agrupados por color de ojos.\nK. Listar todos los superhéroes agrupados por tipo de inteligencia.")
+    valor_ingrsado = input("1-A. Normalizar datos.\n2-B. Recorrer la lista imprimiendo por consola el nombre de cada superhéroe de género NB\n3-C. Recorrer la lista y determinar cuál es el superhéroe más alto de género F\n4-D. Recorrer la lista y determinar cuál es el superhéroe más alto de género M\n5-E. Recorrer la lista y determinar cuál es el superhéroe más débil de género M\n6-F. Recorrer la lista y determinar cuál es el superhéroe más débil de género NB\n7-G. Recorrer la lista y determinar la fuerza promedio de los superhéroes de género NB\n8-H. Determinar cuántos superhéroes tienen cada tipo de color de ojos.\n9-I. Determinar cuántos superhéroes tienen cada tipo de color de pelo.\n10-J. Listar todos los superhéroes agrupados por color de ojos.\n11-K. Listar todos los superhéroes agrupados por tipo de inteligencia.")
     
     return valor_ingrsado
 
@@ -232,4 +232,4 @@ def validar_entero(cadena:str):
 
 def stark_menu_principal():
     
-    pass
+    ingreso_usuario =  imprimir_menu()
