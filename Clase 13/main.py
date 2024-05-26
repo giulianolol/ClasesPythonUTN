@@ -1,6 +1,6 @@
 from heroes import lista_personajes as lista
 from funciones import *
-    
+ 
 stark_normalizar_datos(lista)
 
 # for i in range(len(lista)):
@@ -29,10 +29,22 @@ stark_normalizar_datos(lista)
 
 
 
-lista_2 =  obtener_dato_cantidad(lista, 2,"fuerza")
+#lista_2 =  obtener_dato_cantidad(lista, 2,"fuerza")
 
-for i in range(len(lista_2)):
+#for i in range(len(lista_2)):
 
-    print (lista_2[i])
+#    print (lista_2[i])
     
+#print(sumar_dato_heroe(lista, "fuerza"))
 
+#print(dividir(10,2))
+
+#print(calcular_promedio(lista, "fuerza"))
+
+# print(validar_entero("asdadf"))
+# print(validar_entero("4654"))
+# print(validar_entero("asdad54456"))
+
+valor = imprimir_menu()
+
+print(valor)

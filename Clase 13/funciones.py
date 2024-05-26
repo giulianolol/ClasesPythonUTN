@@ -164,6 +164,72 @@ def stark_imprimir_heroes(lista:list):
         
 def sumar_dato_heroe(lista:list, clave:str):
     
-    pass
+    suma = 0
+    
+    for i in range(len(lista)):
+        
+        if type(lista[i]) == dict and len(lista[i]) > 0:
+            
+            if clave == "fuerza" or clave == "altura" or clave == "peso":
+                
+                suma += lista[i][clave]
+        
+    return suma
 
-    #PAGINA 6 - FUNCION 4.1
+def dividir(diviendo: int, divisor:int):
+    
+    if divisor != 0:
+    
+        retorno = diviendo / divisor
+        
+    else: retorno = False
+    
+    return retorno
+
+def calcular_promedio(lista:list, clave:str):
+    
+    suma_dato = sumar_dato_heroe(lista, clave)
+    
+    promedio = dividir(suma_dato, len(lista))
+    
+    return promedio
+
+def mostrar_promedio_dato(lista:list, clave:str):
+    
+    if lista:
+    
+        for i in range(len(lista)):
+            
+            if type(lista[i]) != int and type(lista[i]) != float:
+                
+                retorno = False
+            
+            else:
+                
+                retorno = True
+    
+    else: retorno = False
+    
+    return retorno
+
+def imprimir_menu():
+    valor_ingrsado = input("A. Normalizar datos.\nB. Recorrer la lista imprimiendo por consola el nombre de cada superhéroe de género NB\nC. Recorrer la lista y determinar cuál es el superhéroe más alto de género F\nD. Recorrer la lista y determinar cuál es el superhéroe más alto de género M\nE. Recorrer la lista y determinar cuál es el superhéroe más débil de género M\nF. Recorrer la lista y determinar cuál es el superhéroe más débil de género NB\nG. Recorrer la lista y determinar la fuerza promedio de los superhéroes de género NB\nH. Determinar cuántos superhéroes tienen cada tipo de color de ojos.\nI. Determinar cuántos superhéroes tienen cada tipo de color de pelo.\nJ. Listar todos los superhéroes agrupados por color de ojos.\nK. Listar todos los superhéroes agrupados por tipo de inteligencia.")
+    
+    return valor_ingrsado
+
+
+def validar_entero(cadena:str):
+    
+    bandera_no_digito = True
+    
+    for i in range(len(cadena)):
+        
+        if cadena[i].isdigit() == False:
+            
+            bandera_no_digito = False
+            
+    return bandera_no_digito
+
+def stark_menu_principal():
+    
+    pass
