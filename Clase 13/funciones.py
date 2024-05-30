@@ -1,4 +1,4 @@
-import time
+import time, os
 
 def stark_normalizar_datos(lista):
 
@@ -70,7 +70,7 @@ def obtener_nombre_y_dato(diccionario:dict, clave:str):
 
 def obtener_maximo(lista:list, clave:str):
     
-    valor_minimo = 0
+    valor_maximo = 0
     bandera = True
     
     for i in range(len(lista)):
@@ -83,17 +83,17 @@ def obtener_maximo(lista:list, clave:str):
     
     if bandera != False:
         
-        for i in range(len(lista)):
+        for x in lista:
             
-            if type(lista[i][clave]) == int or type(lista[i][clave]) == float:
+            if type(x[clave]) == int or type(x[clave]) == float:
                 
-                for i in range(len(lista[i])):
+                for i in x:
                     
-                    if lista[i][clave] > valor_minimo:
+                    if x[clave] > valor_maximo:
                         
-                        valor_minimo = lista[i][clave]
+                        valor_maximo = x[clave]
     
-    return valor_minimo
+    return valor_maximo
 
 def obtener_minimo(lista: list, clave: str):
     
@@ -215,7 +215,7 @@ def mostrar_promedio_dato(lista:list, clave:str):
     return retorno
 
 def imprimir_menu():
-    valor_ingresado = input("1-A. Normalizar datos.\n2-B. Recorrer la lista imprimiendo por consola el nombre de cada superhéroe de género NB\n3-C. Recorrer la lista y determinar cuál es el superhéroe más alto de género F\n4-D. Recorrer la lista y determinar cuál es el superhéroe más alto de género M\n5-E. Recorrer la lista y determinar cuál es el superhéroe más débil de género M\n6-F. Recorrer la lista y determinar cuál es el superhéroe más débil de género NB\n7-G. Recorrer la lista y determinar la fuerza promedio de los superhéroes de género NB\n8-H. Determinar cuántos superhéroes tienen cada tipo de color de ojos.\n9-I. Determinar cuántos superhéroes tienen cada tipo de color de pelo.\n10-J. Listar todos los superhéroes agrupados por color de ojos.\n11-K. Listar todos los superhéroes agrupados por tipo de inteligencia.")
+    valor_ingresado = input("1-A. Normalizar datos.\n2-B. Recorrer la lista imprimiendo por consola el nombre de cada superhéroe de género NB\n3-C. Recorrer la lista y determinar cuál es el superhéroe más alto de género F\n4-D. Recorrer la lista y determinar cuál es el superhéroe más alto de género M\n5-E. Recorrer la lista y determinar cuál es el superhéroe más débil de género M\n6-F. Recorrer la lista y determinar cuál es el superhéroe más débil de género NB\n7-G. Recorrer la lista y determinar la fuerza promedio de los superhéroes de género NB\n8-H. Determinar cuántos superhéroes tienen cada tipo de color de ojos.\n9-I. Determinar cuántos superhéroes tienen cada tipo de color de pelo.\n10-J. Listar todos los superhéroes agrupados por color de ojos.\n11-K. Listar todos los superhéroes agrupados por tipo de inteligencia.\n")
     
     valor_validado = validar_entero(valor_ingresado)
 
@@ -234,15 +234,41 @@ def validar_entero(cadena:str):
             
     return bandera_letra
 
+def filtrar_datos_por_clave(lista:list, clave:str, valor_a_igualar, parametro:str):
+    
+    if parametro == "lista":
+        
+        lista_valores_igualados = []
+        
+        for i in lista:
+            
+            if i[clave] == valor_a_igualar:
+                
+                lista_valores_igualados.append(i["nombre"])
+        
+        retorno = lista_valores_igualados
+        
+    else:
+        
+        lista_diccionarios_igualados = []
+        
+        for i in lista:
+            
+            if i[clave] == valor_a_igualar:
+                
+                lista_diccionarios_igualados.append(i)
+        
+        retorno = lista_diccionarios_igualados
+
+    return retorno
+
 def stark_menu_principal():
     
     ingreso_usuario =  imprimir_menu()
 
     while ingreso_usuario[1] == True:
 
-        print("Error. Ingrese un numero válido.")
-        print("Cargando...")
-        time.sleep(2)
+        print("Error. Ingrese un numero válido: ")
         ingreso_usuario =  imprimir_menu()
 
     ingreso_usuario = ingreso_usuario[0]
@@ -253,62 +279,109 @@ def stark_menu_principal():
 
 def stark_marvel_app(lista):
 
+    flag_datos_normalizados = False
+    
     valor_ingresado = stark_menu_principal()
 
-    while valor_ingresado != 1:
+    while valor_ingresado != 1 and valor_ingresado != "1":
 
-        valor_ingresado_aux = input("Es necesario corregir los datos primero.\nIngrese un el numero 1: ")
-        
-        while valor_ingresado_aux != "1":
+        valor_ingresado = input("Es necesario corregir los datos primero.\nIngrese el numero 1: ")
+
+    stark_normalizar_datos(lista)
+    flag_datos_normalizados =  True
+
+    valor_ingresado = input("Datos normalizados correctamente. \nIngrese la funcion que desea utilizar: ")
+    
+    while valor_ingresado != 0 and valor_ingresado != "0":
+    
+        if valor_ingresado == 1 or valor_ingresado == "1":
             
-            valor_ingresado_aux = input("Es necesario corregir los datos primero.\nIngrese un el numero 1: ")
+            print("Los datos fueron noramlizados correctamente.")
+            
+            print("Cargando ...")
+            time.sleep(3)
+            os.system("cls")
+            valor_ingresado = stark_menu_principal()
 
-        stark_normalizar_datos(lista)
+        elif flag_datos_normalizados == True and (valor_ingresado == "2" or valor_ingresado == 2):
+            
+            lista_heroes =  filtrar_datos_por_clave(lista,"genero","NB","lista")
 
-        valor_ingresado = input("Ingrese la funcion que desea utilizar. ")
+            print("Superheroes de género NB:\n")
+            
+            for i in range(len(lista_heroes)):
 
-        if valor_ingresado == 2 :
+                print(f"-{lista_heroes[i]}")
+            
+            print("\nCargando ...")
+            time.sleep(3)
+            os.system("cls")
+                      
+        elif flag_datos_normalizados == True and (valor_ingresado == "3" or valor_ingresado == 3):
 
-            for i in range(len(lista)):
+            lista_heroes_F = filtrar_datos_por_clave(lista,"genero","F","diccionario")
+            
+            alutra_maxima_F = obtener_maximo(lista_heroes_F,"altura")
+            
+            lista_heroes_F_filtrada = obtener_dato_cantidad(lista_heroes_F,alutra_maxima_F,"altura")
+            
+            print("Superheroe/s mas alto de género F:\n")
+            
+            for i in range(len(lista_heroes_F_filtrada)):
+                
+                print(f"-{lista_heroes_F_filtrada[i]}")
+            
+            print("\nCargando...")
+            time.sleep(3)
+            os.system("cls")
 
-                print(obtener_nombre_y_dato(lista[i],"genero"))
+        elif flag_datos_normalizados == True and (valor_ingresado == "4" or valor_ingresado == 4):
 
-        elif valor_ingresado == 3 :
+            lista_heroes_M = filtrar_datos_por_clave(lista,"genero","M","diccionario")
+            
+            alutra_maxima_M = obtener_maximo(lista_heroes_M,"altura")
+            
+            lista_heroes_F_filtrada = obtener_dato_cantidad(lista_heroes_M, alutra_maxima_M, "altura")
+            
+            print("Superheroe/s más alto de género M:\n")
+            
+            for i in range(len(lista_heroes_F_filtrada)):
+                
+                print(f"-{lista_heroes_F_filtrada[i]}")
+            
+            print("\nCargando...")
+            time.sleep(3)
+            os.system("cls")
 
-            print("Está acá 3")
-
-        elif valor_ingresado == 4 :
-
-            print("Está acá 4")
-
-        elif valor_ingresado == 5 :
+        elif flag_datos_normalizados == True and valor_ingresado == "5" :
 
             pass
 
-        elif valor_ingresado == 6 :
+        elif flag_datos_normalizados == True and valor_ingresado == "6" :
 
             pass
 
-        elif valor_ingresado == 7 :
+        elif flag_datos_normalizados == True and valor_ingresado == "7" :
 
             pass
 
-        elif valor_ingresado == 8 :
+        elif flag_datos_normalizados == True and valor_ingresado == "8":
 
             pass
 
-        elif valor_ingresado == 9 :
+        elif flag_datos_normalizados == True and valor_ingresado == "9" :
 
             pass
 
-        elif valor_ingresado == 10 :
+        elif flag_datos_normalizados == True and valor_ingresado == "10" :
 
             pass
 
-        elif valor_ingresado == 11 :
+        elif flag_datos_normalizados == True and valor_ingresado == "11" :
 
             pass
 
-        else: 
-            print("Está acá.")
-            print(type(valor_ingresado))
+        else:
+            print("PASSAHRE")
+             
+        valor_ingresado = stark_menu_principal()
