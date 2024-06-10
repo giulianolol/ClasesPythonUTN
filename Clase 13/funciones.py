@@ -1,5 +1,7 @@
 import time, os
 
+
+
 def stark_normalizar_datos(lista):
 
     bandera_dato_modificado = False
