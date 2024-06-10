@@ -6,9 +6,10 @@ archivo_csv = 'Proyectos.csv'
     
 # contar_proyectos_activos(lista_archivo)
 
-dicio = {'id': 15,'Nombre del Proyecto': "Prueba",'Descripcion': "Descripcion Prueba",'Fecha de inicio' : 321,"Fecha de Fin": 546,'Presupuesto': 987897,'Estado':"Activo"}
-
-escribir_csv(dicio) 
+#escribir_csv('Proyectos.csv',dicio) 
 
 print(leer_csv('Proyectos.csv'))
 
+imprimir_menu()
+
+menu_funcional()

@@ -1,8 +1,6 @@
 import csv
 from datetime import *
 
-
-
 def contar_proyectos_activos(lista: list):
 
     contador = 0
@@ -15,7 +13,7 @@ def contar_proyectos_activos(lista: list):
 
             if contador == 50:
                 
-                print("Ya llegaste al límite de 50 proyectos activos, elimina alguno para contiunar.")
+                print("Ya llegaste al límite de 50 proyectos activos, elimina alguno para continuar.")
                 break
     
     if contador < 50:
@@ -27,7 +25,7 @@ def leer_csv(nombre_archivo):
     
     datos = []
     
-    with open(nombre_archivo, 'r', newline='') as archivo_csv:
+    with open(nombre_archivo, mode='r', newline='') as archivo_csv:
         
         lector_csv = csv.DictReader(archivo_csv)
         
@@ -37,17 +35,13 @@ def leer_csv(nombre_archivo):
     
     return datos  
 
-def escribir_csv(datos):
+def escribir_csv(ruta_archivo, datos):
     
-    with open('Proyectos.csv', mode ='r', newline ='', encoding='utf-8') as file:
-        
-        lector_csv = csv.DictReader(file)
-        encabezados = lector_csv.fieldnames
+    file = open(ruta_archivo, 'a')
     
-    with open('Proyectos.csv', mode='a', newline='') as archivo:
+    file.writelines(datos)
         
-        escritor_csv = csv.DictWriter(archivo, fieldnames=encabezados)
-        escritor_csv.writerows(datos)
+    file.close()
 
 def validar_ingreso_palabra(string):
     
@@ -111,6 +105,7 @@ def validar_formato_fechas(fecha):
         
     elif not (partes[0].isdigit() and partes[1].isdigit() and partes[2].isdigit()):
         retorno = False
+        
     elif len(partes[0]) != 2 or len(partes[1]) != 2 or len(partes[2]) != 4:
         retorno = False
         
@@ -247,8 +242,46 @@ def validar_agregar_proyecto():
     
     return proyecto
     
-             
+
+def modificar_proyecot(id:int, lista_proyectos:list):
+    
+    for i in range(len(lista_proyectos)):
         
+        if lista_proyectos[i]["id"] == id:
+            
+           pass####################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+        
+        else:
+            
+            retorno = "El id no está asignado a ningún proyecto."
+
+
+def imprimir_sub_menu():
+    
+    bandera_valor = False
+    
+    while bandera_valor == False:
+        
+        valor = input("*********************************************\n|- 1. Nombre del Proyecto.\n|- 2. Descripción.\n|- 3. Fecha de inicio.\n|- 4. Fecha de Fin.\n|- 5. Presupesto.\n|- 6. Estado.")
+    
+        validar_valor = validar_ingreso_numero(valor)
+    
+        while validar_valor == True:    
+            
+            valor = input("Error, ingrese un valor numerico.")
+            
+            validar_valor = validar_ingreso_numero(valor)
+            
+        valor = int(valor)
+        
+        if valor <= 0 or valor >= 7:
+            
+            print("Error, ingrese un valor entre el 1 y el 6.")
+    
+            break    
+        
+        bandera_valor = True
+                
 def imprimir_menu():
 
     print("*********************************************\n|- 1. Ingrear proyecto.\n|- 2. Modificar proyecto.\n|- 3. Cancelar proyecto.\n|- 4. Comprobar proyectos.\n|- 5. Mostrar todos.\n|- 6. Calcular presupuesto promedio.\n|- 7. Buscar proyecto por nombre.\n|- 8. Ordenar proyectos.\n|- 9. Retomar proyecto\n|- 10. Salir\n|*******************************************")
@@ -265,8 +298,10 @@ def menu_funcional():
             
             case "1":
                 
-                prueba = "as"
-                asd = input("Ingresar proyecto")
+                proyecto = validar_agregar_proyecto()
+                
+                print(proyecto)
+                
                 break
                 
             case "2":
