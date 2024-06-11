@@ -243,22 +243,45 @@ def validar_agregar_proyecto():
     return proyecto
     
 
-def modificar_proyecot(id:int, lista_proyectos:list):
+def modificar_proyecto(lista_proyectos:list):
     
+    bandera_id_encontado = False
+      
+    id = input("Ingrese el id del proyecto a modificar: ")
+        
+    validacion_id = validar_ingreso_numero(id)
+        
+    while validacion_id == True:
+            
+        id = input("Error, ingres un valor numérico.")
+            
+        validacion_id = validar_ingreso_numero(id)
+        
     for i in range(len(lista_proyectos)):
         
         if lista_proyectos[i]["id"] == id:
             
-           pass####################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+            proyecto_diccionario = lista_proyectos[i] 
+            bandera_id_encontado = True
+    
+    if bandera_id_encontado == True:
         
-        else:
-            
-            retorno = "El id no está asignado a ningún proyecto."
+        imprimir_sub_menu(proyecto_diccionario)
+    
+    else: 
+        
+        print("Error, id no encontrado.")
 
 
-def imprimir_sub_menu():
+def imprimir_sub_menu(proyecto_a_modificar:dict):
     
     bandera_valor = False
+    
+    print("Mostrando datos de proyecto acutual.")
+
+    for key, value in proyecto_a_modificar.items():
+            
+        print(f"{key} - {value}")
     
     while bandera_valor == False:
         
@@ -268,7 +291,7 @@ def imprimir_sub_menu():
     
         while validar_valor == True:    
             
-            valor = input("Error, ingrese un valor numerico.")
+            valor = input("Error, ingrese un valor numérico.")
             
             validar_valor = validar_ingreso_numero(valor)
             
@@ -289,6 +312,8 @@ def imprimir_menu():
 
 def menu_funcional():
     
+    
+    lista_proyectos = leer_csv("Proyectos.csv")
     valor_ingresado = input()
     bandera = True
     
@@ -306,7 +331,7 @@ def menu_funcional():
                 
             case "2":
                 
-                prueba = "asd"
+                valor_ingresado = modificar_proyecto(lista_proyectos)
                 asd = input("Modificar proyecto")
                 break
                 
