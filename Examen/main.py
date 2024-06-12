@@ -8,8 +8,10 @@ archivo_csv = 'Proyectos.csv'
 
 #escribir_csv('Proyectos.csv',dicio) 
 
-print(leer_csv('Proyectos.csv'))
+#print(leer_csv('Proyectos.csv'))
 
 imprimir_menu()
 
 menu_funcional()
+
+#print (leer_csv('Proyectos.csv'))
