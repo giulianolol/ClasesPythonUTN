@@ -1,6 +1,6 @@
 from funciones import *
 
-archivo_csv = 'Proyectos.csv'
+#archivo_csv = 'Proyectos.csv'
 
 # lista_archivo = leer_csv(archivo_csv)
     
@@ -10,8 +10,12 @@ archivo_csv = 'Proyectos.csv'
 
 #print(leer_csv('Proyectos.csv'))
 
+#print("prueba")
+
+res = leer_csv('Proyectos.csv')
+
+print(res)
+
 imprimir_menu()
 
 menu_funcional()
-
-#print (leer_csv('Proyectos.csv'))

@@ -1,6 +1,6 @@
 import csv
 import time
-from datetime import *
+from datetime import datetime
 
 def contar_proyectos_activos(lista: list):
 
@@ -145,6 +145,22 @@ def fechas_validas(fecha1, fecha2):
         retorno = (False, "La fecha de fin es menor a al fecha inicio.")
     
     return retorno
+
+def obtener_nombre(proyecto):
+    
+    retorno = proyecto["Nombre del Proyecto"].lower()
+    
+    return retorno
+
+def obtener_presupuesto(proyecto):
+    
+    retorno = float(proyecto["Presupuesto"])
+    
+    return retorno
+
+def obtener_fecha_inicio(proyecto):
+    
+    retorno = datetime.strptime(proyecto["Fecha de incio"], "%d/%m/%Y")
 
 def validar_agregar_proyecto():
     
@@ -458,7 +474,7 @@ def mostrar_todos(lista_proyectos):
         
         nombre = proyecto['Nombre del Proyecto']
         descripcion = proyecto['Descripcion']
-        presupuesto = f"${float(proyecto['Presupuesto']):,.2f}"
+        presupuesto = f"${proyecto['Presupuesto']}"
         fecha_inicio = proyecto['Fecha de inicio']
         fecha_fin = proyecto['Fecha de Fin']
         estado = proyecto['Estado']
@@ -480,7 +496,89 @@ def calcular_promedio(lista, key):
         suma += num_aux
         
     return suma / len(lista)
-  
+
+def buscar_proyecto_por_nombre(lista_proyecto):
+    
+    nombre = input("Ingrese el nombre del proyecto a buscar: ")
+    
+    nombre.lower()
+    
+    for i in range(len(lista_proyecto)):
+        
+        if lista_proyecto[i]["Nombre del Proyecto"].lower() == nombre:
+            
+            retorno =  lista_proyecto[i]
+            
+            break
+        
+        else: retorno = "No hay ninguún proyecto con ese nombre"
+        
+    return retorno
+
+def ordenar_proyectos(lista_proyectos:list):
+    
+    criterio = input("Ingres el criterio por el cual desea ordenar los proyectos:\n| 1. Nombre.\n| 2. Presupuesto.\n| 3. Fecha de inicio.\n")
+    
+    while criterio != "1" and criterio != "2" and criterio != "3":
+        
+        criterio = input("Error, ingrese un valor válido:\n| 1. Nombre.\n| 2. Presupuesto.\n| 3. Fecha de inicio.\n")
+    
+    criterio_2 = input("Ingrese un 1 si quiere ordenarla de manera ascendente o 2 si quiere hacerlo de manera descendente: ")
+    
+    while criterio_2 != "1" and criterio_2 != "2":
+        
+        criterio_2 = input("Error, ingrese un valor válido: ")
+    
+    
+    if criterio == "1":
+        
+        clave = obtener_nombre()
+        
+        pass
+    
+def dar_alta_proyecto_cancelado(lista_proyectos):
+    
+    bandera_pryecto_encontrado = False
+    
+    id_ingresado = input("Ingrese el id del proyecto que desa dar de alta: ")
+    
+    for i in range(len(lista_proyectos)):
+        
+        
+        if lista_proyectos[i]['id'] == id_ingresado and lista_proyectos[i]['Estado'] == 'Cancelado':
+            
+            proyecto_guardado = lista_proyectos[i]
+            
+            bandera_pryecto_encontrado = True
+            
+        else: 
+            
+            retorno = "No se encontró ningún proyecto asociado a este id o su estado no es 'Cancelado'"
+    
+    if bandera_pryecto_encontrado == True:
+        
+        print("Proyecto a modificar: ")
+        
+        for key, value in proyecto_guardado.items():
+                    
+            if key == "Presupuesto":
+                    
+                print(f"{key} - ${value}")
+                    
+        else: print(f"{key} - {value}")
+        
+        tecla = input("Presiona 1 si quiere modificar este proyecto, 2 si quiere cancelar: ")
+        
+        if tecla == "1":
+            
+            proyecto_guardado["Estado"] == "Activo"
+        
+        else: print("Proceso cancelado.")
+            
+    else: 
+        
+        print(retorno)
+    
 def imprimir_menu():
 
     print("*********************************************\n|- 1. Ingresar proyecto.\n|- 2. Modificar proyecto.\n|- 3. Cancelar proyecto.\n|- 4. Comprobar proyectos.\n|- 5. Mostrar todos.\n|- 6. Calcular presupuesto promedio.\n|- 7. Buscar proyecto por nombre.\n|- 8. Ordenar proyectos.\n|- 9. Retomar proyecto\n|- 10. Salir\n|*******************************************")
@@ -503,69 +601,70 @@ def menu_funcional():
                 
                 print(proyecto)
                 
-                break
                 
             case "2":
                 
                 valor_ingresado = modificar_proyecto(lista_proyectos)
-                
-                break
+
                 
             case "3":
                 
                 cancelar_proyecto(lista_proyectos)
-                
-                break
+
                             
             case "4":
                 
                 prueba = "as"
                 asd = input("Comprobar proyectos")
-                break
+
             
             case "5":
                 
                 mostrar_todos(lista_proyectos)
-                break
+
             
             case "6":
-                
+                             
                 presupuesto_promedio = calcular_promedio(lista_proyectos, "Presupuesto")
                 
                 print(f"El presupuesto promedio es de ${presupuesto_promedio}")
                 
-                break
             
             case "7":
                 
-                prueba = "as"
-                asd = input("Buscar proyecto por nombre")
-                break
+                resultado = buscar_proyecto_por_nombre(lista_proyectos)
+                
+                for key, value in resultado.items():
+                    
+                    if key == "Presupuesto":
+                    
+                        print(f"{key} - ${value}")
+                    
+                    else: print(f"{key} - {value}")   
                 
             case "8":
                 
-                prueba = "asd"
-                asd = input("Ordernar proyecto")
-                break
+                lista_ordenada = ordenar_proyectos(lista_proyectos)
+            
+                for key, value in lista_ordenada.items():
+                    
+                    if key == "Presupuesto":
+                    
+                        print(f"{key} - ${value}")
+                    
+                    else: print(f"{key} - {value}") 
                 
             case "9":
                 
-                prueba = 32
-                asd = input("Retornar proyecto")
-                break
+                dar_alta_proyecto_cancelado(lista_proyectos)
                 
             case "10":
                 
                 prueba = "oeoe"
                 asd = input("Salir")
                 bandera = False
-                break
                                         
             case _:
                 
                 prueba = "ddf"
                 asd = input("Ninguna es correcta")
-                break
-
-
-menu_funcional()
