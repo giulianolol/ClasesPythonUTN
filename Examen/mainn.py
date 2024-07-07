@@ -1,21 +1,15 @@
 from funciones import *
 
-#archivo_csv = 'Proyectos.csv'
+#print("Las fechas estan siendo formateadas para el correcto funcionamiento del programa ... ")
 
-# lista_archivo = leer_csv(archivo_csv)
-    
-# contar_proyectos_activos(lista_archivo)
+#time.sleep(2.5)
 
-#escribir_csv('Proyectos.csv',dicio) 
+#print("Las fechas fueron formateadas exitosamente.")
 
-#print(leer_csv('Proyectos.csv'))
+#time.sleep(1)
 
-#print("prueba")
-
-res = leer_csv('Proyectos.csv')
-
-print(res)
+tecla = input("Pulse cualquier tecla para continuar :)")
 
 imprimir_menu()
 
-menu_funcional()
+menu_funcional(tecla)
