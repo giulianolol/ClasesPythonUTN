@@ -618,17 +618,14 @@ def comprobar_proyectos(lista_proytectos):
     
     fecha_hoy_formateada = fecha_hoy.strftime("%d/%m/%Y")
     
-    print(fecha_hoy_formateada)
-    
     proyectos_modificados = []
     
     for i in range(len(lista_proytectos)):
         
-        #fecha_archivo_formateada = datetime.strftime(lista_proytectos[i]["Fecha de Fin"], "%d/%m/%Y")
         
         lista_proytectos[i]["Fecha de Fin"].replace("-","/")
         
-        if lista_proytectos[i]["Fecha de Fin"] < fecha_hoy_formateada:
+        if lista_proytectos[i]["Fecha de Fin"] < fecha_hoy_formateada and lista_proytectos[i]['Estado'] == "Activo":
             
             lista_proytectos[i]["Estado"] = "Finalizado"
             
@@ -754,7 +751,7 @@ def buscar_proyecto_por_nombre(lista_proyecto):
         
     return retorno
 
-def ordenar_proyectos(lista_proyectos:list):
+def ordenar_y_mostrar_proyectos(lista_proyectos:list):
     
     criterio = input("Ingres el criterio por el cual desea ordenar los proyectos:\n| 1. Nombre.\n| 2. Presupuesto.\n| 3. Fecha de inicio.\n")
     
@@ -779,16 +776,34 @@ def ordenar_proyectos(lista_proyectos:list):
         
         clave = lambda proyecto: proyecto['Nombre del Proyecto']
         
+        lista_ordenada = sorted(lista_proyectos, key=clave, reverse = criterio_2)
+    
+        for proyecto in lista_ordenada:
+            
+            print(f"{proyecto['id']} - {proyecto['Nombre del Proyecto']} - {proyecto['Descripcion']} - {proyecto['Fecha de inicio']} - {proyecto['Fecha de Fin']} - {proyecto['Presupuesto']} - {proyecto['Estado']}")
+            
+            print('----------------------------------------------------------------')
+        
     elif criterio == "2":
         
-        clave = lambda proyecto: proyecto[float(proyecto['Presupuesto'])]
+       lista_proyectos = burbuja_ordenar_presupuesto(lista_proyectos, criterio_2)
+       
+       for proyecto in lista_proyectos:
+        
+            print(f"{proyecto['id']} - {proyecto['Nombre del Proyecto']} - {proyecto['Descripcion']} - {proyecto['Fecha de inicio']} - {proyecto['Fecha de Fin']} - {proyecto['Presupuesto']} - {proyecto['Estado']}")
+            
+            print('----------------------------------------------------------------')
     
     elif criterio == "3":
         
-        clave = lambda proyecto: convertir_fecha(proyecto['Fecha de inicio'])
+        proyectos_ordenados = burbuja_ordenar_proyectos_por_fecha(lista_proyectos, criterio_2)
+        
+        for proyecto in proyectos_ordenados:
+        
+            print(f"{proyecto['id']}, {proyecto['Nombre del Proyecto']}, {proyecto['Descripcion']}, {proyecto['Fecha de inicio'].strftime('%d/%m/%Y')}, {proyecto['Fecha de Fin']}, {proyecto['Presupuesto']}, {proyecto['Estado']}")
+
     
     
-    return sorted(lista_proyectos, key=clave, reverse = criterio_2)
 
 def proyectos_inicados_en_invierno(lista_proyectos):
     
@@ -913,11 +928,13 @@ def dar_alta_proyecto_cancelado(lista_proyectos):
                     
             escribir_csv('Proyectos.csv', lista_proyectos)
         
+            print("El estado del proyecto se modificó a 'Activo'. ")
+            
         else: print("Proceso cancelado.")
             
     else: 
         
-        print("El estado del proyecto se modificó a 'Activo'. ")
+        print(retorno)
 
 def obtener_proyectos_inactivos(lista_proyectos):
     
@@ -930,6 +947,62 @@ def obtener_proyectos_inactivos(lista_proyectos):
             lista_proyectos_inactivos.append(lista_proyectos[i])
     
     return lista_proyectos_inactivos
+
+def cargar_datos(csv_file):
+    proyectos = []
+    with open(csv_file, mode='r', encoding='utf-8-sig') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            row['Fecha de inicio'] = datetime.strptime(row['Fecha de inicio'].strip(), '%d/%m/%Y')
+            proyectos.append(row)
+    return proyectos
+
+def burbuja_ordenar_presupuesto(proyectos, orden):
+    
+    largo_proyectos = len(proyectos)
+    
+    if orden == True:
+    
+        for i in range(largo_proyectos):
+            
+            for j in range(0, largo_proyectos-i-1):
+                
+                if proyectos[j]['Presupuesto'] > proyectos[j+1]['Presupuesto']:
+                    
+                    proyectos[j], proyectos[j+1] = proyectos[j+1], proyectos[j]
+    
+    else: 
+        for i in range(largo_proyectos):
+            
+            for j in range(0, largo_proyectos-i-1):
+                
+                if proyectos[j]['Presupuesto'] < proyectos[j+1]['Presupuesto']:
+                    
+                    proyectos[j], proyectos[j+1] = proyectos[j+1], proyectos[j]
+                
+    return proyectos
+
+def burbuja_ordenar_proyectos_por_fecha(proyectos, valor):
+    
+    largo_lista = len(proyectos)
+    
+    if valor == True:
+    
+        orden='ascendente'
+    
+    else: orden='descendente'
+    
+    for i in range(largo_lista):
+        
+        for j in range(0, largo_lista-i-1):
+            
+            if (orden == 'ascendente' and proyectos[j]['Fecha de inicio'] > proyectos[j+1]['Fecha de inicio']) or (orden == 'descendente' and proyectos[j]['Fecha de inicio'] < proyectos[j+1]['Fecha de inicio']):
+
+                proyectos[j], proyectos[j+1] = proyectos[j+1], proyectos[j]
+                
+    return proyectos
+
+
     
 def imprimir_menu():
 
@@ -1016,6 +1089,8 @@ def menu_funcional(tecla):
                 valor_ingresado = input()   
                 
             case "7":
+                
+                lista_proyectos = cargar_csv_lista('Proyectos.csv')
                     
                 resultado = buscar_proyecto_por_nombre(lista_proyectos)
                     
@@ -1030,7 +1105,7 @@ def menu_funcional(tecla):
                                                         
                             print(f"{key} - ${value}")
                             
-                    else: print(f"{key} - {value}")   
+                        else: print(f"{key} - {value}")   
                 
                 imprimir_menu()
                 
@@ -1038,19 +1113,9 @@ def menu_funcional(tecla):
                 
             case "8":
                 
-                lista_formateada = cargar_csv_lista('Proyectos.csv')
-                
-                print(lista_formateada)
+                lista_formateada = cargar_datos('Proyectos.csv')
                     
-                lista_ordenada = ordenar_proyectos(lista_formateada)
-                
-                for proyecto in lista_ordenada:
-                
-                    for clave, valor in proyecto.items():
-                            
-                        print(f"| {clave} - {valor}|")
-                        
-                    print("---------------------------------------------------------------------------------------")
+                ordenar_y_mostrar_proyectos(lista_formateada)
             
                 imprimir_menu()
                 
