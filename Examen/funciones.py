@@ -1,4 +1,4 @@
-import csv, json
+import csv, json, os
 import re
 import time
 from datetime import datetime
@@ -21,21 +21,6 @@ def contar_proyectos_activos(lista: list):
     if contador < 50:
         
         print("Todo ok")
-                
-    
-def leer_csv(nombre_archivo):
-    
-    datos = []
-    
-    with open(nombre_archivo, mode='r', newline='', encoding='utf-8-sig') as archivo_csv:
-        
-        lector_csv = csv.DictReader(archivo_csv)
-        
-        for fila in lector_csv:
-            
-            datos.append(dict(fila))
-    
-    return datos
 
 def cargar_csv_lista(ruta):
     
@@ -44,7 +29,6 @@ def cargar_csv_lista(ruta):
         lector = csv.DictReader(archivo)
         
         return list(lector)
-
 
 def escribir_csv(ruta_archivo, datos):
     
@@ -68,25 +52,25 @@ def leer_json(ruta_json):
     
     return datos
 
-def escribir_json(letra, puntaje, fecha_actual):
+def escribir_json(id, nombre_proyecto, descripcion, fecha_de_inicio, fecha_de_fin, presupuesto, estado):
     
-    datos = leer_json('datos.json')
+    datos = leer_json('ProyectosFinalizados.json')
     
-    ultimos_datos = {'nombre': letra, 'puntaje': puntaje, 'fecha':fecha_actual}
+    proyectos_finalizados = {'id': id, 'Nombre del Proyecto': nombre_proyecto, 'Descripcion':descripcion, 'Fecha de incio': fecha_de_inicio, 'Fecha de Fin': fecha_de_fin, 'Presupuesto': presupuesto, 'Estado': estado,}
     
-    datos["jugador"].append(ultimos_datos)
+    datos["ProyectosFinalizados"].append(proyectos_finalizados)
                     
-    with open("datos.json", "w") as file:
+    with open("ProyectosFinalizados.json", "w") as file:
                         
         json.dump(datos, file, indent=4)
     
     file.close()
 
-def validar_ingreso_palabra(string):
+def validar_ingreso_palabra(cadena):
     
     retorno = True
     
-    for i in string:
+    for i in cadena:
         
         if i.isalpha() == False and i != " ":
             
@@ -125,19 +109,6 @@ def validar_ingreso_alfanumerico(string:str):
             break
     
     return retorno 
-
-def validar_formato_fecha(cadena:str):
-    
-    contador = 0
-    retorno = False
-    
-    for i in cadena:
-        
-        if i == "/": contador +=1
-    
-    if contador == 2: retorno = True
-         
-    return retorno
 
 def validar_formato_fechas(fecha):
     
@@ -234,17 +205,13 @@ def obtener_presupuesto(proyecto,i):
     
     return retorno
 
-def obtener_fecha_inicio(proyecto,i):
-    
-    retorno = datetime.strptime(proyecto[i]["Fecha de incio"], "%d/%m/%Y")
-
 def validar_agregar_proyecto():
     
     bandera_proyecto = False
     bandera_fecha = False
-    
-    datos = leer_csv('Proyectos.csv')
 
+    datos = cargar_csv_lista('Proyectos.csv')
+    
     nombre_proyecto = input("Ingrese el nombre del proyecto: ")
     
     validacion_nombre_proyecto = validar_ingreso_palabra(nombre_proyecto)
@@ -305,7 +272,6 @@ def validar_agregar_proyecto():
         bandera_fecha = True
     
     bandera_fecha = False
-    bandera_ej = False
     
     while bandera_fecha == False:
         
@@ -345,20 +311,17 @@ def validar_agregar_proyecto():
     
     escribir_csv('Proyectos.csv', lista_proyectos)
     
-    print(lista_proyectos)
-    
     return proyecto
     
-
 def modificar_proyecto(lista_proyectos:list):
     
     bandera_id_encontado = False
     
     for i in lista_proyectos:
         
-        for k , v in  i.items():
+        for key , value in  i.items():
         
-            print(k, v)
+            print(key, value)
         
         print("----------------------------------")
       
@@ -386,7 +349,6 @@ def modificar_proyecto(lista_proyectos:list):
     else: 
         
         print("Error, id no encontrado.")
-
 
 def imprimir_sub_menu(lista_proyectos:list, id:int):
     
@@ -511,8 +473,7 @@ def imprimir_sub_menu(lista_proyectos:list, id:int):
             print(f"La fecha se modificó correctamente.\n|- Fecha anterior: {fecha_inicio_anterior}\n|- Fecha actualizada: {proyecto_a_modificar['Fecha de inicio']}")
                          
             tecla = input("Ingrese una tecla para continuar.")
-               
-        
+                  
         case "4":
             
             bandera_fecha = False
@@ -612,33 +573,71 @@ def imprimir_sub_menu(lista_proyectos:list, id:int):
                     
             tecla = input("Ingrese una tecla para continuar.")
             
-def comprobar_proyectos(lista_proytectos):
+def comprobar_proyectos():
+    
+    lista_proyectos = cargar_datos_fin('Proyectos.csv')
     
     fecha_hoy = datetime.today()
-    
-    fecha_hoy_formateada = fecha_hoy.strftime("%d/%m/%Y")
-    
-    proyectos_modificados = []
-    
-    for i in range(len(lista_proytectos)):
         
-        
-        lista_proytectos[i]["Fecha de Fin"].replace("-","/")
-        
-        if lista_proytectos[i]["Fecha de Fin"] < fecha_hoy_formateada and lista_proytectos[i]['Estado'] == "Activo":
+    for proyecto in lista_proyectos:
             
-            lista_proytectos[i]["Estado"] = "Finalizado"
+        if proyecto['Fecha de Fin'] < fecha_hoy:
+                
+            proyecto['Estado'] = 'Finalizado'
             
-            proyectos_modificados.append(lista_proytectos[i])
+            print("ENCONTRÉ")
+
+    guardar_datos('Proyectos.csv', lista_proyectos)
     
-    escribir_csv('Proyectos.csv', lista_proytectos)
+    return lista_proyectos
+
+def cargar_datos_fecha_fin(csv_file):
+    
+    proyectos = []
+    
+    with open(csv_file, mode='r', encoding='utf-8-sig') as file:
         
-    return proyectos_modificados    
-    
+        reader = csv.DictReader(file)
+        
+        for row in reader:
             
+            row['Fecha de Fin'] = datetime.strptime(row['Fecha de Fin'].strip(), '%d/%m/%Y')
+            
+            proyectos.append(row)
+            
+    return proyectos
+
+def actualizar_estados(proyectos):
+    
+    fecha_actual = datetime.now()
+    
+    for proyecto in proyectos:
+        
+        if proyecto['Fecha de Fin'] < fecha_actual:
+            
+            proyecto['Estado'] = 'Finalizado'
+            
+    return proyectos
+
+def guardar_datos_fecha_fin(csv_file, proyectos):
+    
+    fieldnames = ['id', 'Nombre del Proyecto', 'Descripcion', 'Fecha de inicio', 'Fecha de Fin', 'Presupuesto', 'Estado']
+    
+    with open(csv_file, mode='w', newline='', encoding='utf-8-sig') as file:
+        
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        
+        writer.writeheader()
+        
+        for proyecto in proyectos:
+
+            proyecto['Fecha de Fin'] = proyecto['Fecha de Fin'].strftime('%d/%m/%Y')
+            
+            writer.writerow(proyecto)   
+                   
 def cancelar_proyecto(lista_proyectos):
     
-    datos =  leer_csv('Proyectos.csv')
+    datos = cargar_csv_lista('Proyectos.csv')
     
     bandera_id_encontado = False
       
@@ -698,7 +697,6 @@ def cancelar_proyecto(lista_proyectos):
         ultimo_id = int(datos[-1]['id']) if datos else 0
 
         print(f"El id ingresado no está asignado a ningún proyecto. El último proyecto tiene el id {ultimo_id}")
-
 
 def mostrar_todos(lista_proyectos):
     
@@ -786,7 +784,7 @@ def ordenar_y_mostrar_proyectos(lista_proyectos:list):
         
     elif criterio == "2":
         
-       lista_proyectos = burbuja_ordenar_presupuesto(lista_proyectos, criterio_2)
+       lista_proyectos = burbujeo_ordenar_presupuesto(lista_proyectos, criterio_2)
        
        for proyecto in lista_proyectos:
         
@@ -796,14 +794,11 @@ def ordenar_y_mostrar_proyectos(lista_proyectos:list):
     
     elif criterio == "3":
         
-        proyectos_ordenados = burbuja_ordenar_proyectos_por_fecha(lista_proyectos, criterio_2)
+        proyectos_ordenados = burbujeo_ordenar_proyectos_por_fecha(lista_proyectos, criterio_2)
         
         for proyecto in proyectos_ordenados:
         
             print(f"{proyecto['id']}, {proyecto['Nombre del Proyecto']}, {proyecto['Descripcion']}, {proyecto['Fecha de inicio'].strftime('%d/%m/%Y')}, {proyecto['Fecha de Fin']}, {proyecto['Presupuesto']}, {proyecto['Estado']}")
-
-    
-    
 
 def proyectos_inicados_en_invierno(lista_proyectos):
     
@@ -813,7 +808,7 @@ def proyectos_inicados_en_invierno(lista_proyectos):
                     
         fecha = lista_proyectos[i]["Fecha de inicio"]
                     
-        partes = fecha.split("-")
+        partes = fecha.split("/")
                     
         partes[0] = int(partes[0])
                     
@@ -876,12 +871,11 @@ def ordenar_por_presupuesto(lista_proyectos):
         
         proyecto['Presupuesto'] = float(proyecto['Presupuesto'])
         
-    proyectos_orednados = sorted(lista_proyectos, key = lambda y: y['Presupuesto'], reverse = True)
+    proyectos_ordenados = sorted(lista_proyectos, key = lambda y: y['Presupuesto'], reverse = True)
     
-    proyectos_orednados_filtrados = proyectos_orednados[:3]
+    proyectos_ordenados_filtrados = proyectos_ordenados[:3]
     
-    return proyectos_orednados_filtrados
-    
+    return proyectos_ordenados_filtrados
         
 def dar_alta_proyecto_cancelado(lista_proyectos):
     
@@ -949,15 +943,38 @@ def obtener_proyectos_inactivos(lista_proyectos):
     return lista_proyectos_inactivos
 
 def cargar_datos(csv_file):
+    
     proyectos = []
+    
     with open(csv_file, mode='r', encoding='utf-8-sig') as file:
+        
         reader = csv.DictReader(file)
-        for row in reader:
-            row['Fecha de inicio'] = datetime.strptime(row['Fecha de inicio'].strip(), '%d/%m/%Y')
-            proyectos.append(row)
+        
+        for fila in reader:
+            
+            fila['Fecha de inicio'] = datetime.strptime(fila['Fecha de inicio'].strip(), '%d/%m/%Y')
+            
+            proyectos.append(fila)
+            
     return proyectos
 
-def burbuja_ordenar_presupuesto(proyectos, orden):
+def cargar_datos_fin(csv_file):
+    
+    proyectos = []
+    
+    with open(csv_file, mode='r', encoding='utf-8-sig') as file:
+        
+        reader = csv.DictReader(file)
+        
+        for row in reader:
+            
+            row['Fecha de Fin'] = datetime.strptime(row['Fecha de Fin'].strip(), '%d/%m/%Y')
+            
+            proyectos.append(row)
+            
+    return proyectos
+
+def burbujeo_ordenar_presupuesto(proyectos, orden):
     
     largo_proyectos = len(proyectos)
     
@@ -982,7 +999,7 @@ def burbuja_ordenar_presupuesto(proyectos, orden):
                 
     return proyectos
 
-def burbuja_ordenar_proyectos_por_fecha(proyectos, valor):
+def burbujeo_ordenar_proyectos_por_fecha(proyectos, valor):
     
     largo_lista = len(proyectos)
     
@@ -1002,17 +1019,152 @@ def burbuja_ordenar_proyectos_por_fecha(proyectos, valor):
                 
     return proyectos
 
-
+def limpiar_fecha(fecha):
     
+    fecha = fecha.strip()
+    
+    formatos = ['%d-%m-%Y', '%Y-%m-%d', '%d/%m/%Y']
+    
+    for formato in formatos:
+        
+        try:
+            
+            return datetime.strptime(fecha, formato).strftime('%d/%m/%Y')
+        
+        except ValueError:
+            
+            continue
+        
+    raise ValueError(f"Formato de fecha no reconocido: {fecha}")
+
+def cargar_y_formatear_fechas(csv_file):
+    
+    proyectos = []
+    
+    with open(csv_file, mode='r', encoding='utf-8-sig') as file:
+        
+        reader = csv.DictReader(file)
+        
+        for fila in reader:
+            
+            fila['Fecha de inicio'] = limpiar_fecha(fila['Fecha de inicio'])
+            
+            fila['Fecha de Fin'] = limpiar_fecha(fila['Fecha de Fin'])
+            
+            proyectos.append(fila)
+            
+    return proyectos
+
+def guardar_datos(csv_file, proyectos):
+    
+    fieldnames = ['id', 'Nombre del Proyecto', 'Descripcion', 'Fecha de inicio', 'Fecha de Fin', 'Presupuesto', 'Estado']
+    
+    with open(csv_file, mode='w', newline='', encoding='utf-8-sig') as file:
+        
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        
+        writer.writeheader()
+        
+        for proyecto in proyectos:
+            
+            writer.writerow(proyecto)
+
+def filtrar_proyectos_por_presupuesto(prespuesto):
+
+    proyectos_presupuesto_mayor = []
+
+    lista_csv = cargar_csv_lista('Proyectos.csv')
+
+    for i in lista_csv:
+        
+        if float(i['Presupuesto']) > prespuesto: 
+            
+            proyectos_presupuesto_mayor.append(i)
+    
+    return proyectos_presupuesto_mayor
+
+def generar_reporte(proyectos, numero_reporte_file = 'numero_reporte_proyectos.txt'):
+
+    if os.path.exists(numero_reporte_file):
+        
+        with open(numero_reporte_file, "r") as f:
+            
+            numero_reporte = int(f.read().strip())
+    else:
+        numero_reporte = 0
+
+    numero_reporte += 1
+
+    with open(numero_reporte_file, "w") as f:
+        
+        f.write(str(numero_reporte))
+
+    nombre_archivo_reporte = f"reporte_{numero_reporte}_proyectos.txt"
+
+    fecha_solicitud = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    contenido_reporte = {
+        "numero_reporte": numero_reporte,
+        "fecha_solicitud": fecha_solicitud,
+        "cantidad_proyectos": len(proyectos),
+        "proyectos": proyectos
+    }
+
+    with open(nombre_archivo_reporte, "w") as f:
+        
+        f.write(json.dumps(contenido_reporte, indent=4))
+
+    print(f"Reporte {numero_reporte} guardado en {nombre_archivo_reporte}")    
+
+def generar_reporte_por_nombre(proyectos, nombre_proyecto, numero_reporte_file="numero_reporte_nombre.txt"):
+    
+    proyectos_filtrados = []
+    
+    for proyecto in proyectos:
+        
+        if proyecto['Nombre del Proyecto'] == nombre_proyecto:
+            
+            proyectos_filtrados.append(proyecto)
+
+    if os.path.exists(numero_reporte_file):
+        
+        with open(numero_reporte_file, "r") as file:
+            
+            numero_reporte = int(file.read().strip())         
+    else:
+        
+        numero_reporte = 0
+
+    numero_reporte += 1
+
+    with open(numero_reporte_file, "w") as file:
+        
+        file.write(str(numero_reporte))
+
+    nombre_archivo_reporte = f"reporte_{numero_reporte}_nombre.txt"
+
+    fecha_solicitud = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    contenido_reporte = {
+        "numero_reporte": numero_reporte,
+        "fecha_solicitud": fecha_solicitud,
+        "nombre_proyecto": proyectos_filtrados
+    }
+
+    with open(nombre_archivo_reporte, "w") as file:
+        
+        file.write(json.dumps(contenido_reporte, indent=4))
+
+    print(f"Reporte {numero_reporte} guardado en {nombre_archivo_reporte}")    
+
 def imprimir_menu():
 
     print("*********************************************\n|- 1. Ingresar proyecto.\n|- 2. Modificar proyecto.\n|- 3. Cancelar proyecto.\n|- 4. Comprobar proyectos.\n|- 5. Mostrar todos.\n|- 6. Calcular presupuesto promedio.\n|- 7. Buscar proyecto por nombre.\n|- 8. Ordenar proyectos.\n|- 9. Retomar proyecto\n|- 0. Salir\n|*******************************************")
 
-
 def menu_funcional(tecla):
     
+    lista_proyectos = cargar_csv_lista("Proyectos.csv")
     
-    lista_proyectos = leer_csv("Proyectos.csv")
     valor_ingresado = input()
     bandera = True
     
@@ -1035,6 +1187,8 @@ def menu_funcional(tecla):
                 valor_ingresado = input()
                                     
             case "2":
+                
+                lista_proyectos = cargar_csv_lista("Proyectos.csv")
                     
                 valor_ingresado = modificar_proyecto(lista_proyectos)
 
@@ -1051,24 +1205,22 @@ def menu_funcional(tecla):
                 valor_ingresado = input()
                                 
             case "4":
-                    
-                lista_proyectos_modificados = comprobar_proyectos(lista_proyectos)
                 
-                for i in lista_proyectos_modificados:
+                lista_proyectos = cargar_datos_fecha_fin('Proyectos.csv')
+                
+                lista_proyectos_actualizados = actualizar_estados(lista_proyectos)
+                
+                guardar_datos_fecha_fin('Proyectos.csv',lista_proyectos_actualizados)
                     
-                    for key, value in i.items():
-                            
-                        if key == "Presupuesto":
-                                                        
-                            print(f"{key} - ${value}")
-                        
-                        else: print(f"{key} - {value}")
+                print("Los proyectos fueron actulizados satisfactoriamente.")
                 
                 imprimir_menu()
                 
                 valor_ingresado = input()
                 
             case "5":
+                
+                lista_proyectos = cargar_csv_lista("Proyectos.csv")
                     
                 mostrar_todos(lista_proyectos)
 
@@ -1128,21 +1280,82 @@ def menu_funcional(tecla):
                 imprimir_menu()
                 
                 valor_ingresado = input()
+            
+            case "10":
+                
+                presupuesto = input("Ingrese el presupuesto: ")
+                
+                validacion_entero =  validar_ingreso_numero_entero(presupuesto)
+                
+                while validacion_entero == True:
+                    
+                    presupuesto = input("Error, ingrese un numero entero.")
+                    
+                    validacion_entero =  validar_ingreso_numero_entero(presupuesto)
+                
+                lista_presupuesto = filtrar_proyectos_por_presupuesto(presupuesto)
+                
+                generar_reporte(lista_presupuesto)
+
+            case "11":
+                
+                proyecto_nombre = input("Ingrese el nombre: ")
+                
+                lista_proyectos = cargar_csv_lista('Proyectos.csv')
+                
+                generar_reporte_por_nombre(lista_proyectos,proyecto_nombre)
                     
             case "0":
+                
+                print("Guarando archivos finalizados...")
+                
+                lista_proyectos = cargar_csv_lista('Proyectos.csv')
+
+                proyectos_finalizados = []
+
+                for i in lista_proyectos:
                     
+                    if i['Estado'] == 'Finalizado':
+                        
+                        proyectos_finalizados.append(i)
+
+                lista_id_proyectos_finalizados_json =  []
+
+                json_finalizados = leer_json('ProyectosFinalizados.json')
+
+                for i in json_finalizados['ProyectosFinalizados']:
+                    
+                    lista_id_proyectos_finalizados_json.append(i['id'])
+
+                for i in proyectos_finalizados:
+                    
+                    if i['id'] not in lista_id_proyectos_finalizados_json:
+    
+                        escribir_json(i['id'], i['Nombre del Proyecto'], i['Descripcion'], i['Fecha de inicio'], i['Fecha de Fin'], i['Presupuesto'], i['Estado'])
+
+                
+                time.sleep(1.5)
+                
+                print("Archivos guardados correctamente...")
+                
+                time.sleep(1)
+                
                 input("Programa cerrado, pulse cualquier tecla para continuar.")
                 tecla = "0"
                 
             case "g":
                 
+                lista_proyectos = cargar_csv_lista('Proyectos.csv')
+                
                 lista_proyectos_inicados_en_invierno = proyectos_inicados_en_invierno(lista_proyectos)
                 
                 lista_presupuesto_maximo = obtener_presupuesto_mayor(lista_proyectos_inicados_en_invierno)
                 
-                for key, value in lista_presupuesto_maximo.items():
-                    
-                    print(f"{key} - {value}")
+                for i in lista_presupuesto_maximo:
+                
+                    for key, value in i.items():
+                        
+                        print(f"{key} - {value}")
             
                 imprimir_menu()
                 
@@ -1150,13 +1363,15 @@ def menu_funcional(tecla):
                 
             case "s":
                 
+                lista_proyectos = cargar_csv_lista('Proyectos.csv')
+                
                 lista_proyectos_inactivos = obtener_proyectos_inactivos(lista_proyectos)
                 
                 lista_presupuesto_maximo = ordenar_por_presupuesto(lista_proyectos_inactivos)
                 
                 for i in lista_presupuesto_maximo:
                     
-                    for clave, valor in i.items():
+                    for key, valor in i.items():
                         
                         print(f"{key} - {valor}")
                 
@@ -1171,4 +1386,3 @@ def menu_funcional(tecla):
                 imprimir_menu()
                 
                 valor_ingresado = input()
-            
